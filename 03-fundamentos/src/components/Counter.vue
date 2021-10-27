@@ -4,7 +4,7 @@
         <p>{{counter}} <sup>2</sup> = {{squareCounter}}</p>
 
         <div>
-            <button @click="decrease">-1</button>
+            <button v-on:click="decrease">-1</button>
             <button @click="increase">+1</button>
         </div>
         
@@ -13,11 +13,21 @@
 
 <script>
 export default {
-    props: ['title'],
+    props: {
+        title: String,
+        start: {
+            type: Number,
+            default: 100,
+            required: true,
+            validator(value){
+                return value >= 0
+            }
+        }
+    },
     //name: 'Counter',
     data(){
         return {
-            counter: 5
+            counter: this.start
         }
     },
     methods:{
