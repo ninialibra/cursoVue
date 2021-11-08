@@ -5,8 +5,8 @@
         <p data-testid="counter">{{counter}}</p>
 
         <div>
-            <button v-on:click="decrease">-1</button>
             <button @click="increase">+1</button>
+            <button v-on:click="decrease">-1</button>
         </div>
         
     </div>
