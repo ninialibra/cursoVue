@@ -1,9 +1,9 @@
 <template>
     <div class="pokemon-container">
     
-        <img :src="imgSrc" 
+        <img v-if="!showPokemon" :src="imgSrc" 
             alt="Pokemon" class="hidden-pokemon">
-        <img v-if="showPokemon" :src="imgSrc" 
+        <img v-else :src="imgSrc" 
             alt="Pokemon" class="fade-in">
     </div>
 </template>
