@@ -2,25 +2,45 @@ import { createRouter, createWebHashHistory } from "vue-router";
 
 const routes = [{
         path: '/',
-        component: () =>
-            import ( /*webpackChunkName: "ListPage" */ '../modules/pokemon/pages/ListPage')
+        redirect: '/pokemon'
     },
     {
-        path: '/about',
+        path: '/pokemon',
+        name: 'pokemon',
         component: () =>
-            import ( /*webpackChunkName: "AboutPage" */ '../modules/pokemon/pages/AboutPage')
+            import ( /*webpackChunkName: "PokemonLayout" */ '../modules/pokemon/layouts/PokemonLayout'),
+        children: [{
+                path: '', //en blanco para ser el path por defecto
+                name: 'pokemon-home',
+                component: () =>
+                    import ( /*webpackChunkName: "ListPage" */ '../modules/pokemon/pages/ListPage')
+            },
+            {
+                path: 'about',
+                name: 'pokemon-about',
+                component: () =>
+                    import ( /*webpackChunkName: "AboutPage" */ '../modules/pokemon/pages/AboutPage')
+            },
+            {
+                path: 'pokemonid/:id',
+                name: 'pokemon-id',
+                component: () =>
+                    import ( /*webpackChunkName: "PokemonPage" */ '../modules/pokemon/pages/PokemonPage'),
+                props: (route) => {
+                    //console.log(route);
+                    const id = Number(route.params.id);
+                    return isNaN(id) ? { id: 1 } : { id };
+                }
+            },
+            {
+
+                path: '',
+                redirect: { name: 'pokemon-about' }
+            }
+
+        ]
     },
-    {
-        path: '/:id',
-        name: 'pokemon-id',
-        component: () =>
-            import ( /*webpackChunkName: "PokemonPage" */ '../modules/pokemon/pages/PokemonPage'),
-        props: (route) => {
-            //console.log(route);
-            const id = Number(route.params.id);
-            return isNaN(id) ? { id: 1 } : { id };
-        }
-    },
+
     {
         path: '/:patchMatch(.*)*',
         component: () =>
