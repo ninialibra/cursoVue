@@ -30,13 +30,13 @@
         <img class="img-thumbnail" 
                 src="https://okdiario.com/img/2022/01/21/5-rasgos-que-definen-la-personalidad-de-los-gatos.jpg" alt="entry picture"/>
     </template>
-    <Fab icon="fa-save" />
+    <Fab icon="fa-save" @on:click="saveEntry" />
     
 </template>
 
 <script>
 import { defineAsyncComponent } from "vue";
-import { mapGetters } from "vuex";
+import { mapGetters, mapActions } from "vuex";
 import getDayMonthYear from "../helpers/getDayMonthYear";
 
 export default {
@@ -54,6 +54,7 @@ export default {
             entry: null
         }
     },
+    
     computed:{
         ...mapGetters('journal', ['getEntryById']),
         dayMonthYear(){
@@ -62,11 +63,15 @@ export default {
         }
     },
     methods:{        
+        ...mapActions('journal',['updateEntry']),
         loadEntry(){
             const entry = this.getEntryById(this.id)
             if(!entry) return this.$router.push({name:'no-entry'})
 
             this.entry = entry
+        },
+        async saveEntry(){
+            this.updateEntry(this.entry)
         }
     },
     created(){        
