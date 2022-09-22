@@ -8,7 +8,8 @@
             </div>
 
             <div>
-                <button class="btn btn-danger mx-2">
+                <button v-if="entry.id" class="btn btn-danger mx-2"
+                    @click="OndeleteEntry">
                     Borrar
                     <i class="fa fa-trash-alt"></i>
                 </button>
@@ -63,15 +64,35 @@ export default {
         }
     },
     methods:{        
-        ...mapActions('journal',['updateEntry']),
+        ...mapActions('journal',['updateEntry','createEntry','deleteEntry']),
         loadEntry(){
-            const entry = this.getEntryById(this.id)
-            if(!entry) return this.$router.push({name:'no-entry'})
 
+            let entry;
+            if(this.id==='new'){
+                entry={
+                    text:'',
+                    date: new Date().getTime()
+                }
+            }else{
+                entry = this.getEntryById(this.id)
+                if(!entry) return this.$router.push({name:'no-entry'})                
+            }    
+            
             this.entry = entry
         },
         async saveEntry(){
-            this.updateEntry(this.entry)
+
+            if(this.entry.id){
+                await this.updateEntry(this.entry)
+            }else{
+                const id = await this.createEntry(this.entry)
+                return this.$router.push({name:'entry',params:{id}})
+            }
+            
+        },
+        async OndeleteEntry(){
+            await this.deleteEntry(this.entry.id)
+            return this.$router.push({name:'no-entry'})
         }
     },
     created(){        

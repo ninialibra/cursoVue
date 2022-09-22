@@ -9,6 +9,10 @@ export const updateEntry = (state, entry) => {
     state.entries[idx] = entry
 }
 
-export const addEntry = ( /*state*/ ) => {
+export const addEntry = (state, entry) => {
+    state.entries.unshift(entry)
+}
 
+export const deleteEntry = (state, id) => {
+    state.entries = state.entries.filter(e => e.id !== id)
 }
