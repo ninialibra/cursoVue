@@ -14,6 +14,7 @@
                     <i class="fa fa-trash-alt"></i>
                 </button>
 
+                <input type="file" @change="onSelectedImage">
                 <button class="btn btn-primary">
                     Subir foto
                     <i class="fa fa-upload"></i>
@@ -39,6 +40,7 @@
 import { defineAsyncComponent } from "vue";
 import { mapGetters, mapActions } from "vuex";
 import getDayMonthYear from "../helpers/getDayMonthYear";
+import Swal from 'sweetalert2';
 
 export default {
     props:{
@@ -82,17 +84,45 @@ export default {
         },
         async saveEntry(){
 
+            new Swal({
+                title: 'Espere por favor...',
+                allowOutsideClick: false
+            })
+            Swal.showLoading()
+
             if(this.entry.id){
                 await this.updateEntry(this.entry)
             }else{
                 const id = await this.createEntry(this.entry)
+                Swal.fire('Guardado','Entrada registrada con éxito', 'success')
+
                 return this.$router.push({name:'entry',params:{id}})
             }
-            
         },
         async OndeleteEntry(){
-            await this.deleteEntry(this.entry.id)
-            return this.$router.push({name:'no-entry'})
+
+            const {isConfirmed} = await Swal.fire({
+                title: '¿Está seguro que quiere borrar?',
+                text: 'Una vez borrado no se puede recuperar.',
+                showDenyButton: true,
+                confirmButtonText: 'Sí, estoy seguro.'
+            })
+
+            if(isConfirmed){
+                new Swal({
+                    title: 'Espere por favor...',
+                    allowOutsideClick: false
+                })
+                Swal.showLoading()
+
+                await this.deleteEntry(this.entry.id)
+                Swal.fire('Eliminado','', 'success')
+
+                return this.$router.push({name:'no-entry'})
+            }            
+        },
+        onSelectedImage(event){
+
         }
     },
     created(){        
